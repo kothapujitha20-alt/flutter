@@ -1,5 +1,4 @@
 public class Main {
-public static void main(String[] args) {
-System.out.println("Hello, World!");
+void main(String[] args) {rintln("Hello, World!");
 }
 }
