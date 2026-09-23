@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Whisk & Wonder — Cozy Cooking Game</title>
+  <style>
+    :root {
+      --cream: #fff9ed;
+      --ink: #332a2a;
+      --muted: #8d7f7b;
+      --coral: #f47764;
+      --coral-dark: #df5d4e;
+      --yellow: #ffc857;
+      --mint: #82d7bc;
+      --blue: #8cc9e8;
+      --line: #f0e4d7;
+      --shadow: 0 18px 45px rgba(84, 52, 35, .10);
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--cream); color: var(--ink); font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    button { font: inherit; cursor: pointer; border: 0; }
+    .app { min-height: 100vh; max-width: 1480px; margin: auto; padding: 22px 34px 34px; }
+    header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px; }
+    .brand { display: flex; align-items: center; gap: 11px; font-size: 22px; font-weight: 850; letter-spacing: -.7px; }
+    .brand-mark { display: grid; place-items: center; width: 43px; height: 43px; border-radius: 14px; background: var(--coral); box-shadow: 0 7px 0 #e5a08e; font-size: 24px; transform: rotate(-5deg); }
+    .top-stats { display: flex; gap: 11px; }
+    .stat { min-width: 108px; padding: 9px 15px; border: 1px solid var(--line); border-radius: 13px; background: #fff; }
+    .stat-label { color: var(--muted); font-size: 10px; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase; }
+    .stat-value { margin-top: 1px; font-size: 19px; font-weight: 850; }
+    .layout { display: grid; grid-template-columns: 240px 1fr 285px; gap: 24px; align-items: start; }
+    .panel { border: 1px solid var(--line); border-radius: 24px; background: rgba(255,255,255,.82); box-shadow: var(--shadow); }
+    .sidebar { padding: 22px 14px; min-height: 680px; }
+    .sidebar h3 { padding: 0 10px; margin: 0 0 14px; font-size: 12px; letter-spacing: 1.5px; color: var(--muted); text-transform: uppercase; }
+    .nav-item { display: flex; align-items: center; gap: 12px; width: 100%; padding: 13px 13px; margin: 5px 0; border-radius: 13px; color: #766766; background: transparent; text-align: left; font-weight: 700; }
+    .nav-item.active { color: #fff; background: var(--coral); box-shadow: 0 5px 0 #eab1a5; }
+    .nav-icon { font-size: 20px; width: 26px; text-align: center; }
+    .daily { margin: 46px 8px 0; padding: 16px; border-radius: 18px; background: #fff3dc; }
+    .daily strong { display: block; font-size: 14px; }
+    .daily p { margin: 7px 0 13px; color: #947956; font-size: 12px; line-height: 1.45; }
+    .progress { height: 7px; background: #f2dcc0; border-radius: 9px; overflow: hidden; }
+    .progress span { display: block; height: 100%; width: 72%; border-radius: inherit; background: var(--yellow); }
+    .game { min-width: 0; }
+    .hero { position: relative; overflow: hidden; display: flex; align-items: center; justify-content: space-between; min-height: 182px; padding: 31px 38px; border-radius: 24px; background: #fae0aa; }
+    .hero:after { content: '✦'; position: absolute; right: 42%; bottom: 6px; color: #f1c46e; font-size: 75px; opacity: .45; }
+    .hero-copy { position: relative; z-index: 1; }
+    .eyebrow { color: var(--coral-dark); font-size: 11px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; }
+    h1 { max-width: 480px; margin: 7px 0 9px; font-size: clamp(28px, 4vw, 43px); letter-spacing: -2px; line-height: .98; }
+    .hero p { max-width: 410px; margin: 0; color: #95734c; font-size: 14px; }
+    .hero-art { position: relative; z-index: 1; display: grid; place-items: center; width: 143px; height: 143px; margin-right: 27px; border: 8px solid #fff3d7; border-radius: 50%; background: #f5c069; box-shadow: 0 10px 0 #e3aa5d; font-size: 70px; transform: rotate(4deg); }
+    .station { margin-top: 20px; padding: 26px; }
+    .station-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+    .station h2 { margin: 0; font-size: 20px; letter-spacing: -.5px; }
+    .order-pill { padding: 7px 11px; border-radius: 99px; color: #a36b1c; background: #fff3d4; font-size: 11px; font-weight: 800; }
+    .recipe { display: grid; grid-template-columns: 1fr 1.15fr; gap: 28px; }
+    .dish-card { display: grid; place-items: center; min-height: 290px; border-radius: 19px; background: #f5f0ea; }
+    .dish { position: relative; display: grid; place-items: center; width: 176px; height: 176px; border: 13px solid #fff; border-radius: 50%; background: radial-gradient(circle at 48% 42%, #f4c980 0 33%, #db955a 34% 37%, #efc177 38% 100%); box-shadow: 0 12px 0 #d8cec3; font-size: 81px; }
+    .dish:after { content: '✦'; position: absolute; right: -34px; top: 5px; color: var(--yellow); font-size: 25px; }
+    .recipe-info h3 { margin: 2px 0 6px; font-size: 27px; letter-spacing: -1px; }
+    .recipe-info p { margin: 0 0 17px; color: var(--muted); font-size: 13px; }
+    .ingredients { display: flex; flex-wrap: wrap; gap: 9px; margin-bottom: 22px; }
+    .ingredient { display: flex; align-items: center; gap: 6px; padding: 9px 10px; border: 1px solid var(--line); border-radius: 10px; background: #fff; color: #6e605c; font-size: 12px; font-weight: 750; transition: .2s; }
+    .ingredient.selected { border-color: var(--mint); background: #e5faf2; color: #358b73; transform: translateY(-2px); }
+    .ingredient.selected:after { content: ' ✓'; }
+    .cook-row { display: flex; align-items: center; gap: 13px; }
+    .cook-btn { padding: 13px 23px; border-radius: 12px; color: #fff; background: var(--coral); box-shadow: 0 5px 0 #d96150; font-weight: 850; transition: .15s; }
+    .cook-btn:hover { background: var(--coral-dark); transform: translateY(-1px); }
+    .cook-btn:active { transform: translateY(3px); box-shadow: 0 2px 0 #d96150; }
+    .cook-btn:disabled { cursor: not-allowed; opacity: .45; box-shadow: none; }
+    .hint { color: var(--muted); font-size: 12px; }
+    .orders { padding: 22px 18px; }
+    .orders h2 { margin: 0 0 17px; font-size: 18px; }
+    .customer { display: flex; gap: 11px; align-items: center; padding: 13px 0; border-bottom: 1px solid var(--line); }
+    .customer:last-child { border: 0; }
+    .avatar { display: grid; place-items: center; flex: 0 0 42px; height: 42px; border-radius: 50%; background: #d9f2f0; font-size: 22px; }
+    .customer-info { min-width: 0; flex: 1; }
+    .customer-name { font-size: 13px; font-weight: 800; }
+    .customer-order { overflow: hidden; margin-top: 3px; color: var(--muted); font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
+    .timer { color: var(--coral); font-size: 11px; font-weight: 800; }
+    .tip { margin-top: 27px; padding: 15px; border-radius: 15px; color: #4e887c; background: #e2f6ef; font-size: 12px; line-height: 1.45; }
+    .tip strong { display: block; margin-bottom: 4px; color: #337d6e; }
+    .toast { position: fixed; left: 50%; bottom: 28px; z-index: 5; padding: 14px 21px; border-radius: 99px; color: #fff; background: var(--ink); box-shadow: var(--shadow); font-size: 13px; font-weight: 750; opacity: 0; pointer-events: none; transform: translate(-50%, 18px); transition: .3s; }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+    @media (max-width: 1100px) { .layout { grid-template-columns: 190px 1fr; } .orders { grid-column: 2; min-height: auto; } .sidebar { min-height: 100%; } }
+    @media (max-width: 700px) { .app { padding: 16px; } header { align-items: flex-start; } .top-stats { gap: 5px; } .stat { min-width: 72px; padding: 7px 8px; } .stat-value { font-size: 16px; } .layout { display: block; } .sidebar { min-height: auto; margin-bottom: 17px; padding: 13px; } .sidebar h3, .daily { display: none; } .nav-item { display: inline-flex; width: auto; margin: 0 3px; padding: 9px; } .nav-item span:last-child { display: none; } .hero { min-height: 180px; padding: 24px; } .hero-art { width: 91px; height: 91px; margin-right: 0; font-size: 45px; border-width: 5px; } .station { padding: 16px; } .recipe { grid-template-columns: 1fr; gap: 17px; } .dish-card { min-height: 210px; } .orders { margin-top: 17px; } }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header>
+      <div class="brand"><div class="brand-mark">🍳</div> Whisk &amp; Wonder</div>
+      <div class="top-stats">
+        <div class="stat"><div class="stat-label">Coins</div><div class="stat-value">🪙 <span id="coins">248</span></div></div>
+        <div class="stat"><div class="stat-label">Level</div><div class="stat-value">⭐ 07</div></div>
+      </div>
+    </header>
+    <div class="layout">
+      <aside class="panel sidebar">
+        <h3>Kitchen</h3>
+        <button class="nav-item active"><span class="nav-icon">👩‍🍳</span><span>Cook now</span></button>
+        <button class="nav-item"><span class="nav-icon">📖</span><span>Recipe book</span></button>
+        <button class="nav-item"><span class="nav-icon">🛍️</span><span>Market</span></button>
+        <button class="nav-item"><span class="nav-icon">🏆</span><span>Achievements</span></button>
+        <div class="daily"><strong>Daily goal</strong><p>Serve 3 happy customers to earn a bonus!</p><div class="progress"><span></span></div></div>
+      </aside>
+      <section class="game">
+        <div class="hero">
+          <div class="hero-copy"><div class="eyebrow">Tuesday • Sunny day</div><h1>Let’s make something delicious!</h1><p>Your little café is bustling. Pick a recipe and make magic in the kitchen.</p></div>
+          <div class="hero-art">🥞</div>
+        </div>
+        <div class="panel station">
+          <div class="station-top"><h2>Today’s special</h2><div class="order-pill">⏱ 02:40 remaining</div></div>
+          <div class="recipe">
+            <div class="dish-card"><div class="dish" id="dish">🥞</div></div>
+            <div class="recipe-info">
+              <h3>Berry Cloud Pancakes</h3><p>Fluffy, sweet, and topped with a little bit of sunshine.</p>
+              <div class="ingredients" id="ingredients">
+                <button class="ingredient" data-name="Flour">🌾 Flour</button><button class="ingredient" data-name="Egg">🥚 Egg</button><button class="ingredient" data-name="Milk">🥛 Milk</button><button class="ingredient" data-name="Berries">🫐 Berries</button><button class="ingredient" data-name="Honey">🍯 Honey</button>
+              </div>
+              <div class="cook-row"><button class="cook-btn" id="cookBtn" disabled>Cook pancakes ✨</button><span class="hint" id="hint">Select all ingredients</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <aside class="panel orders"><h2>Happy customers <span style="color:var(--coral)">♥</span></h2>
+        <div class="customer"><div class="avatar">🧑🏽‍🎨</div><div class="customer-info"><div class="customer-name">Mia</div><div class="customer-order">Berry Cloud Pancakes</div></div><div class="timer">01:52</div></div>
+        <div class="customer"><div class="avatar" style="background:#fff0c9">👨🏻‍💼</div><div class="customer-info"><div class="customer-name">Oliver</div><div class="customer-order">Waiting patiently...</div></div><div class="timer" style="color:var(--yellow)">02:40</div></div>
+        <div class="customer"><div class="avatar" style="background:#f9dded">👩🏽‍🌾</div><div class="customer-info"><div class="customer-name">Ava</div><div class="customer-order">A little sweet treat</div></div><div class="timer" style="color:var(--mint)">03:05</div></div>
+        <div class="tip"><strong>💡 Kitchen tip</strong>Fresh ingredients make customers extra happy. Try to serve before the timer runs out!</div>
+      </aside>
+    </div>
+  </main>
+  <div class="toast" id="toast"></div>
+  <script>
+    const ingredients = [...document.querySelectorAll('.ingredient')];
+    const cookBtn = document.getElementById('cookBtn');
+    const hint = document.getElementById('hint');
+    const toast = document.getElementById('toast');
+    const coins = document.getElementById('coins');
+    const dish = document.getElementById('dish');
+    let cooking = false;
+
+    ingredients.forEach(button => button.addEventListener('click', () => {
+      if (cooking) return;
+      button.classList.toggle('selected');
+      const selected = document.querySelectorAll('.ingredient.selected').length;
+      cookBtn.disabled = selected !== ingredients.length;
+      hint.textContent = selected === ingredients.length ? 'Ready to make magic!' : `${selected}/5 ingredients selected`;
+    }));
+
+    cookBtn.addEventListener('click', () => {
+      if (cooking) return;
+      cooking = true;
+      cookBtn.disabled = true;
+      cookBtn.textContent = 'Cooking... 🔥';
+      hint.textContent = 'Flipping the fluffiest pancakes';
+      dish.textContent = '🍳';
+      dish.style.animation = 'none';
+      setTimeout(() => {
+        dish.textContent = '🥞';
+        cookBtn.textContent = 'Served! 🎉';
+        hint.textContent = '+50 coins • Customer delighted';
+        coins.textContent = Number(coins.textContent) + 50;
+        toast.textContent = 'Order served! You earned 50 coins ✨';
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2800);
+        setTimeout(() => {
+          ingredients.forEach(item => item.classList.remove('selected'));
+          cookBtn.textContent = 'Cook pancakes ✨';
+          hint.textContent = 'Select all ingredients';
+          cooking = false;
+        }, 2200);
+      }, 1600);
+    });
+  </script>
+</body>
+</html>
